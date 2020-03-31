@@ -18,12 +18,13 @@
 // Initialize four piano key inputs, called once to initialize the digital ports
 // Input: none 
 // Output: none
-void Piano_Init(void){  
-	SYSCTL_RCGCGPIO_R |= 0x10; 		//PORT E 3/2-0 PIANO SWITCH INPUTS (3/2 DEPENDING ON 3 OR 4 KEY SWITCHES)
-	volatile int nop;
-	nop++;
-	GPIO_PORTE_DIR_R &= ~0x07;			//ONLY 3 SWITCHES 2-0 INITIALIZED AS INPUTS HERE
-	GPIO_PORTE_DEN_R |= 0x07;
+void Piano_Init(void){
+			SYSCTL_RCGCGPIO_R |= 0x10;
+			volatile uint16_t noop;
+			noop = 69;
+			GPIO_PORTE_DIR_R &= (~0x0F);
+			GPIO_PORTE_DEN_R |= 0x0F;
+
 }
 
 // **************Piano_In*********************
@@ -33,10 +34,7 @@ void Piano_Init(void){
 //   0x01 is just Key0, 0x02 is just Key1, 0x04 is just Key2, 0x08 is just Key3
 //   bit n is set if key n is pressed
 uint32_t Piano_In(void){
+	// read and mask input keys
+		return (GPIO_PORTE_DATA_R & 0x0F);
 	
-	uint8_t key;
-	
-	key = (GPIO_PORTE_DATA_R&0xF);
-
-  return key; // Replace with your code
 }
