@@ -20,13 +20,22 @@ const uint8_t wave[32] = {
   14,13,12,11,9,8,7,5,4,3,2,			
   2,1,1,1,2,2,3,4,5,7};			
 
+	uint8_t i = 0; 			//INDEX
+	uint8_t flag = 0;		//FLAG
+	
 // **************Sound_Init*********************
 // Initialize digital outputs and SysTick timer
 // Called once, with sound/interrupts initially off
 // Input: none
 // Output: none
 void Sound_Init(void){
-  
+	i=0;									//INDEX
+  NVIC_ST_CTRL_R = 0;
+	NVIC_ST_RELOAD_R = wave[i];
+	NVIC_ST_CURRENT_R = 0;
+	NVIC_SYS_PRI3_R = (NVIC_SYS_PRI3_R&0x00FFFFFF)|0x20000000; //PRIORITY 1
+	NVIC_ST_CTRL_R = 7;
+	DAC_Init();
 }
 
 
@@ -41,6 +50,13 @@ void Sound_Init(void){
 //         if period equals zero, disable sound output
 // Output: none
 void Sound_Play(uint32_t period){
-
+	
+	NVIC_ST_RELOAD_R = period;
+	return;
 }
 
+void SysTick_Handler(void){
+	DAC_Out(wave[i]);
+	i = (i+1)%32;
+	return;
+}

@@ -20,8 +20,8 @@
 // Output: none
 void DAC_Init(void){
 	SYSCTL_RCGCGPIO_R |= 0x02;				//PORT B 3-0 HAS DAC OUTPUTS
-	volatile int nop;
-	nop++;
+	volatile uint16_t nop;
+	nop = 32;
 	GPIO_PORTB_DIR_R |= 0x0F;
 	GPIO_PORTB_DEN_R |= 0x0F;
 }
@@ -32,5 +32,5 @@ void DAC_Init(void){
 // Input=n is converted to n*3.3V/15
 // Output: none
 void DAC_Out(uint32_t data){
-	GPIO_PORTB_DATA_R = ((data*3.3)/15);
+	GPIO_PORTB_DATA_R = data;
 }

@@ -16,19 +16,48 @@
 #include "Piano.h"
 #include "TExaS.h"
 
+#include "DAC.h"
+#include "texas.h"
+#define SYSDIV2 4
+
 // basic functions defined at end of startup.s
 void DisableInterrupts(void); // Disable interrupts
 void EnableInterrupts(void);  // Enable interrupts
 
-
+/****
 int main(void){      
   TExaS_Init(SW_PIN_PE3210,DAC_PIN_PB3210,ScopeOn);    // bus clock at 80 MHz
   Piano_Init();
   Sound_Init();
+	DAC_Init();
   // other initialization
   EnableInterrupts();
   while(1){ 
+		switch(Piano_In()){
+			case 0x00:
+				Sound_Play(0);
+				break;
+			case 0x01:
+				Sound_Play(A0);
+				break;
+			case 0x02:
+				Sound_Play(B0);
+				break;
+			case 0x04:
+				Sound_Play(C0);
+				break;
+		}
   }    
 }
+***/
 
+void PLL_Init(void);
 
+int main(void){ uint32_t data; // 0 to 15 DAC output
+  PLL_Init();    // like Program 4.6 in the book, 80 MHz
+  DAC_Init();
+  for(;;) {
+    DAC_Out(data);
+    data = 0x0F&(data+1); // 0,1,2...,14,15,0,1,2,...
+  }
+}
