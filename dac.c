@@ -2,7 +2,7 @@
 // This software configures DAC output
 // Lab 6 requires a minimum of 4 bits for the DAC, but you could have 5 or 6 bits
 // Runs on LM4F120 or TM4C123
-// Program written by: put your names here
+// Program written by: BP Rimal and Kara Olson
 // Date Created: 3/6/17 
 // Last Modified: 1/17/2020 
 // Lab number: 6
@@ -19,11 +19,12 @@
 // Input: none
 // Output: none
 void DAC_Init(void){
-	SYSCTL_RCGCGPIO_R |= 0x02;				//PORT B 3-0 HAS DAC OUTPUTS
-	volatile uint16_t nop;
-	nop = 32;
-	GPIO_PORTB_DIR_R |= 0x0F;
-	GPIO_PORTB_DEN_R |= 0x0F;
+// port b initialize as output
+		SYSCTL_RCGCGPIO_R |= 0x02;
+		volatile uint16_t noop;
+		noop = 69;
+		GPIO_PORTB_DIR_R |= 0x0F;
+		GPIO_PORTB_DEN_R |= 0x0F;
 }
 
 // **************DAC_Out*********************
@@ -32,5 +33,6 @@ void DAC_Init(void){
 // Input=n is converted to n*3.3V/15
 // Output: none
 void DAC_Out(uint32_t data){
-	GPIO_PORTB_DATA_R = data;
+//write one 4-bit to port b
+		GPIO_PORTB_DATA_R = data;
 }
