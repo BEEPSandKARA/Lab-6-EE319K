@@ -15,28 +15,86 @@
 #include "Sound.h"
 #include "Piano.h"
 #include "TExaS.h"
-
-;/////////////
+#include "Music.h"
+/////////////
 #include "DAC.h"
 #include "texas.h"
 
-;//////////////
+//////////////
 
 // basic functions defined at end of startup.s
 void DisableInterrupts(void); // Disable interrupts
 void EnableInterrupts(void);  // Enable interrupts
-
-
+//void delay(void);		// testing
+//uint16_t data = 0;   				// testing
 int main(void){      
   TExaS_Init(SW_PIN_PE3210,DAC_PIN_PB3210,ScopeOn);    // bus clock at 80 MHz
   Piano_Init();
   Sound_Init();
   // other initialization
+	uint8_t Button_Pressed = 0;													// Button_Pressed is a GLOBAL VARIABLE
 	SYSCTL_RCGCGPIO_R |= 0x20;
 	volatile uint16_t noop;
 	noop = 69;
 	GPIO_PORTF_DIR_R |= 0x01;
 	GPIO_PORTF_DEN_R |= 0x01;
+  EnableInterrupts();
+  while(1){ 
+		
+		Button_Pressed = Piano_In();
+		switch(Button_Pressed){
+
+			case 0x01: 
+								Sound_Play(A);
+								break;
+			case 0x02:
+								Sound_Play(B);
+								break;
+			case 0x04:
+								Sound_Play(C);
+								break;
+			case 0x08:
+								Sound_Play(D);
+								break;	
+			case 0x0C:
+								Music_Play(StarWarsThemeSong[]);
+			default:
+								break;
+  }    
+}
+}
+/////////////////////////////////testing///////////////////////////////////////////////////
+/******************************************************************************
+TESTING-TESTING-TESTING-TESTING-TESTING-TESTING-TESTING-TESTING-TESTING-TESTING-TESTING-TESTING-TESTING
+*////////////////////////////////////////////////////////////////////////////////
+/*
+if(Piano_In() == 0x08){
+			DAC_Out(data);
+			data = (data+1)% 16;
+			delay();
+		}}}
+
+void delay(void){
+	for(int i = 0; i < 8000000; i++){
+	}}
+*/
+///////////////////////////////////////////////////////////////////////////////
+//oscilloscope testing
+
+/*
+
+void Delay1ms(int time);  	// blind wait
+void LaunchPad_Init(void);
+void delay(void);
+// lab video Lab6_static
+uint16_t data = 0;
+uint16_t last;
+int main(void){  
+  TExaS_Init(SW_PIN_PE3210,DAC_PIN_PB3210,ScopeOn);	// bus clock at 80 MHz
+  LaunchPad_Init();
+  DAC_Init(); // your lab 6 solution
+  Piano_Init();
+  Sound_Init();
   EnableInterrupts();
   while(1){ 
 		switch(Piano_In()){
@@ -60,15 +118,6 @@ int main(void){
   }    
 }
 }
-
-/*
-void PLL_Init(void);
-int main(void){ uint32_t data; // 0 to 15 DAC output
-  PLL_Init();    // like Program 4.6 in the book, 80 MHz
-  DAC_Init();
-  for(;;) {
-    DAC_Out(data);
-    data = 0x0F&(data+1); // 0,1,2...,14,15,0,1,2,...
-  }
-}
 */
+
+
