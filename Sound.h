@@ -62,6 +62,7 @@
 #define D7  17026   // 146.8 Hz
 #define DF7 18039   // 138.6 Hz
 #define C6  19111   // 130.8 Hz
+#define Q 0xFFFFFF	// quiet because too large of a frequency to hear
 
 // **************Sound_Init*********************
 // Initialize digital outputs and SysTick timer
