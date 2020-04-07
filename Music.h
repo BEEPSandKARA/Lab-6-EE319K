@@ -25,6 +25,7 @@ typedef const struct note note_t;
 
 void Music_Init(void);
 void Music_Play(note_t song[]);
+void stop_song(void);
 
 #endif
 

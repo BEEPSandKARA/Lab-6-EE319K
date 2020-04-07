@@ -63,22 +63,22 @@ note_t StarWarsThemeSong[110] = {
 {Q, g},
 {A0, e+g},
 {Q, g},
-{A0, s},
-{AF, e+g},
+{A0, g},
+{AF, e+e},
 {G, s},
-{Q, (g/2)},
-{EF, s},
+{G, g},
+{EF, s+s},
 {D, s+g},
 {EF, e},
-{Q, e},
+{Q, s-g},
 {A0, e+g},
-{EF, q},
+{EF, q+g},
 {D, e+g},
-{DF, s+g},
-{C0, s},
-{B0, s},
-{C0, s},
-{Q, e},
+{EF, s+g},
+{C0, s+g},
+{B0, s+g},
+{C0, s+g},
+{Q, e-g},
 {F0, e},
 {AF0, q},
 {F0, e+g},
@@ -109,6 +109,7 @@ int main(void){
 	GPIO_PORTF_DEN_R |= 0x02;
   EnableInterrupts();
   while(1){ 
+
 		if(hearbeat == 0) GPIO_PORTF_DATA_R ^= 0x02;
 		hearbeat = (hearbeat + 1) % 200000;
 //		Button_Pressed = Piano_In();
@@ -130,13 +131,19 @@ int main(void){
 								break;	
 			case 0x0C:
 								Music_Play(StarWarsThemeSong);
-								while(play){}
+								while(play){
+								if(Piano_In() == 0x01){ 
+									stop_song();
+									break;
+								}
+								}
 								break;
 			default:
 								break;
   }    
 }
 }
+
 /////////////////////////////////testing///////////////////////////////////////////////////
 /******************************************************************************
 TESTING-TESTING-TESTING-TESTING-TESTING-TESTING-TESTING-TESTING-TESTING-TESTING-TESTING-TESTING-TESTING
@@ -152,46 +159,3 @@ void delay(void){
 	for(int i = 0; i < 8000000; i++){
 	}}
 */
-///////////////////////////////////////////////////////////////////////////////
-//oscilloscope testing
-
-/*
-
-void Delay1ms(int time);  	// blind wait
-void LaunchPad_Init(void);
-void delay(void);
-// lab video Lab6_static
-uint16_t data = 0;
-uint16_t last;
-int main(void){  
-  TExaS_Init(SW_PIN_PE3210,DAC_PIN_PB3210,ScopeOn);	// bus clock at 80 MHz
-  LaunchPad_Init();
-  DAC_Init(); // your lab 6 solution
-  Piano_Init();
-  Sound_Init();
-  EnableInterrupts();
-  while(1){ 
-		switch(Piano_In()){
-			case 0x00:
-								Sound_Play(0);
-								break;
-			case 0x01: 
-								Sound_Play(A);
-								break;
-			case 0x02:
-								Sound_Play(B);
-								break;
-			case 0x04:
-								Sound_Play(C);
-								break;
-			case 0x08:
-								Sound_Play(D);
-								break;	
-			default:
-								break;
-  }    
-}
-}
-*/
-
-

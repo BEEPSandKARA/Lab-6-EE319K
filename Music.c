@@ -34,8 +34,9 @@
 #include "..//inc//tm4c123gh6pm.h"
 #include "Music.h"
 #include "Sound.h"
+#include "Piano.h"
 
-uint32_t play;
+uint32_t play;	//global variable that checks if the song array has reached null termination or any button has been pressed
 uint8_t song_index;
 note_t *ptsong;
 
@@ -74,7 +75,9 @@ void Timer0A_Init(void){long sr;
 }
 
 void stop_song(void){
-
+				TIMER0_CTL_R = 0x00;						// disable timer
+				song_index = 0x00;							// reinitialize song_index
+				Sound_Play(0);
 }
 
 void Music_Init(){
@@ -83,7 +86,7 @@ void Music_Init(){
 }
 void Music_Play(note_t song[]){
 			ptsong = song;
-			TIMER0_TAILR_R = 0x80; 			// random initialization
+			TIMER0_TAILR_R = 0x800; 			// random initialization
 			TIMER0_CTL_R = 0x00000001;    // 10) enable TIMER0A			
 			}
 
@@ -93,7 +96,7 @@ void Music_Play(note_t song[]){
 
 void Timer0A_Handler(void){
 	TIMER0_ICR_R = TIMER_ICR_TATOCINT;// acknowledge timer0A timeout
-	play = (ptsong[song_index].duration);
+	play = (ptsong[song_index].duration); //global variable that checks if the song array has reached null termination or any button has been pressed
 	if(play){ 												// check if the duration is 0; song array is null terminated
 			Sound_Play(ptsong[song_index].pitch);
 			TIMER0_TAILR_R = ptsong[song_index].duration;
